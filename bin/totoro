@@ -1,0 +1,24 @@
+#!/usr/bin/env ruby
+require 'totoro'
+# You might want to change this
+ENV['RAILS_ENV'] ||= 'development'
+
+root = Dir.pwd
+root = File.dirname(root) until File.exist?(File.join(root, 'config'))
+Dir.chdir(root)
+
+require File.join(root, 'config', 'environment')
+Rails.logger = logger = Logger.new STDOUT
+logger.level = Logger.const_get(Rails.configuration.log_level.to_s.upcase)
+
+worker_class = ARGV[0]
+logger.info 'Start to subscribe to Rabbitmq'
+worker = Totoro::Config.get_worker worker_class
+Totoro::Queue.subscribe(worker_class) do |delivery_info, metadata, payload|
+  logger.info "#{worker_class} Received: #{payload}"
+  payload_hash = JSON.parse(payload).with_indifferent_access
+  worker.process payload_hash, metadata, delivery_info
+end
+
+logger.info 'Listening to the Rabbitmq'
+Totoro::Queue.channel.work_pool.join
