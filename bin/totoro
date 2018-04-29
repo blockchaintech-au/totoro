@@ -11,11 +11,12 @@ require File.join(root, 'config', 'environment')
 Rails.logger = logger = Logger.new STDOUT
 logger.level = Logger.const_get(Rails.configuration.log_level.to_s.upcase)
 
-worker_class = ARGV[0]
+worker_name = ARGV[0]
 logger.info 'Start to subscribe to Rabbitmq'
-worker = Totoro::Config.get_worker worker_class
-Totoro::Queue.subscribe(worker_class) do |delivery_info, metadata, payload|
-  logger.info "#{worker_class} Received: #{payload}"
+worker = Totoro::Config.get_worker worker_name
+worker_queue = worker.class::QUEUE
+Totoro::Queue.subscribe(worker_queue) do |delivery_info, metadata, payload|
+  logger.info "#{worker_queue} Received: #{payload}"
   payload_hash = JSON.parse(payload).with_indifferent_access
   worker.process payload_hash, metadata, delivery_info
 end

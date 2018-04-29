@@ -2,7 +2,7 @@ module Totoro
   class Config
     class <<self
       def data
-        @data ||= Rails.application.config_for(:amqp).with_indifferent_access
+        @data ||= Rails.application.config_for(:totoro).with_indifferent_access
       end
 
       def reset_data
