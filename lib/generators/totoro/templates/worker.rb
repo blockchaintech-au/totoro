@@ -2,7 +2,7 @@
 
 module Worker
   class <%= name.camelcase %>
-    QUEUE = '<%= queue || name.underscore %>'
+    QUEUE = '<%= queue || name.underscore %>'.freeze
     def process(payload, _metadata, _delivery_info)
       # worker process
     end
