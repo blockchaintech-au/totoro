@@ -1,0 +1,12 @@
+Style/Documentation:
+  Enabled: false
+
+Layout/TrailingBlankLines:
+  Enabled: false
+
+AllCops:
+  Exclude:
+    - 'spec/*.rb'
+    - 'lib/generators/totoro/templates/*'
+
+  TargetRubyVersion: "2.5"
