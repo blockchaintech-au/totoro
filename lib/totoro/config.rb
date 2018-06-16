@@ -2,7 +2,7 @@
 
 module Totoro
   class Config
-    def initialize(prefix)
+    def initialize(prefix = nil)
       @data = Rails.application.config_for(:totoro).with_indifferent_access
       @data = @data[prefix] if prefix.present?
     end

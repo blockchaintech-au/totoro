@@ -10,19 +10,7 @@ root = File.dirname(root) until File.exist?(File.join(root, 'config'))
 Dir.chdir(root)
 
 require File.join(root, 'config', 'environment')
-Rails.logger = logger = Logger.new STDOUT
-logger.level = Logger.const_get(Rails.configuration.log_level.to_s.upcase)
 
-worker_name = ARGV[0]
-queue_class = Totoro::Queue
-logger.info 'Start to subscribe to Rabbitmq'
-worker = queue_class.get_worker worker_name
-worker_queue = worker.class::QUEUE
-queue_class.subscribe(worker_queue) do |delivery_info, metadata, payload|
-  logger.info "#{worker_queue} Received: #{payload}"
-  payload_hash = JSON.parse(payload).with_indifferent_access
-  worker.process payload_hash, metadata, delivery_info
-end
+worker_class = ARGV[0]
 
-logger.info 'Listening to the Rabbitmq'
-queue_class.channel.work_pool.join
+::Worker.const_get(worker_class.to_s.camelize).new.execute

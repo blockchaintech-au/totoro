@@ -25,7 +25,7 @@ services:
     ports:
       - '3000:3000'
     volumes:
-      - ./test/totoro_test:/app
+      # - ./test/totoro_test:/app
       - .:/totoro
     command: ./bin/rails c
     environment:

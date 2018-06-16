@@ -1,7 +1,7 @@
 PATH
   remote: /totoro
   specs:
-    totoro (0.1.4)
+    totoro (0.1.5)
       bunny (~> 2.10)
 
 GEM
@@ -131,7 +131,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  bunny
   byebug
   listen (>= 3.0.5, < 3.2)
   puma (~> 3.7)

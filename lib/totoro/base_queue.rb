@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'bunny'
+
 module Totoro
   class BaseQueue
     class <<self
