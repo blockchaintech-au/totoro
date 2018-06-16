@@ -1,0 +1,42 @@
+version: '2.0'
+services:
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: app
+      RABBITMQ_DEFAULT_PASS: app
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+
+  db:
+    image: postgres:9.6.6
+    restart: always
+    ports:
+      - '5432:5432'
+    volumes:
+      - 'postgres:/var/lib/postgresql/data'
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+
+  totoro:
+    build: .
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./test/totoro_test:/app
+      - .:/totoro
+    command: ./bin/rails c
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_USERNAME: app
+      RABBITMQ_PASSWORD: app
+    depends_on:
+      - db
+      - rabbitmq
+
+volumes:
+  postgres:
