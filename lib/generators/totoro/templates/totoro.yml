@@ -6,21 +6,20 @@ default: &default
       user: app
       pass: app
     queue:
-      # example_queue:
-      #   name: real.queue.name
-      #   durable: true
-  
+      example_queue:
+        name: real.queue.name
+        durable: true
+
   custom:
     connect:
-      host: rabbitmq2
+      host: rabbitmq
       port: 5672
       user: app
       pass: app
     queue:
-      # example_queue:
-      #   name: real.queue.name
-      #   durable: true
-
+      custom_queue:
+        name: custom.queue.name
+        durable: true
 
 development:
   <<: *default

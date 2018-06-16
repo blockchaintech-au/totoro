@@ -4,9 +4,13 @@ Style/Documentation:
 Layout/TrailingBlankLines:
   Enabled: false
 
+Metrics/AbcSize:
+  Max: 20
+
 AllCops:
   Exclude:
     - 'spec/*.rb'
     - 'lib/generators/totoro/templates/*'
+    - 'test/**/*'
 
   TargetRubyVersion: "2.5"

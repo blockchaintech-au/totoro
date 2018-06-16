@@ -4,7 +4,7 @@ Totoro is a RabbitMQ util that focuses on samplify queue operation.
 
 ## Installation
 
-#### Install gem
+### Install gem
 Add this line to your application's Gemfile:
 
 ```ruby
@@ -15,14 +15,22 @@ And then execute:
 
     $ bundle
 
-#### Generate configuration file
+#### Initialize Totoro for Rails app
 ```
-rails g totoro:config
+rails g totoro:init
 ```
+
+This command will generate two files
+
+1. `totoro.yml` (Rabbitmq configuration file)
+2. `initilizers/totoro.rb` (Rails initializer)
 
 ## Quick Start
 
+### Default rabbitmq server
+
 #### Enqueue
+
 ```
 Totoro::Queue.enqueue('queue', payload)
 ```
@@ -35,10 +43,15 @@ rails g totoro:wroker <worker_name> <queue_name>
 after that, add business logic in the process method
 ```
 module Worker
-  class WorkerClass
-    QUEUE = 'queue_name'
-    def process(payload, _metadata, _delivery_info)
+  class WorkerClass < Totoro::BaseWorker
+    def process(payload, metadata, delivery_info)
       # worker process
+    end
+
+    private
+
+    def setup
+      @queue_name = <queue_name>
     end
   end
 end
@@ -48,6 +61,40 @@ finally, run the background deamon
 bundle exec totoro worker_class
 ```
 
+### Custom rabbitmq server
+
+#### Enqueue
+
+```
+Totoro::<ServerName>::Queue.enqueue('queue', payload)
+```
+
+#### Dequeue
+To create a dequeue daemon, first you need to create a worker
+```
+rails g totoro:wroker <worker_name> <queue_name> <prefix>
+```
+after that, add business logic in the process method
+```
+module Worker
+  class WorkerClass < Totoro::BaseWorker
+    def process(payload, metadata, delivery_info)
+      # worker process
+    end
+
+    private
+
+    def setup
+      @prefix = :<prefix>
+      @queue_name = <queue_name>
+    end
+  end
+end
+```
+finally, run the background deamon
+```
+bundle exec totoro worker_class
+```
 
 ## Contributing
 

@@ -1,0 +1,16 @@
+# frozen_string_literal: true
+
+module Worker
+  class <%= name.camelcase %> < Totoro::BaseWorker
+    def process(payload, metadata, delivery_info)
+      # worker process
+    end
+
+    private
+
+    def setup<% if prefix.present? %>
+      @prefix = :<%= prefix %><% end %>
+      @queue_name = '<%= queue || name.underscore %>'
+    end
+  end
+end

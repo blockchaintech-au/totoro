@@ -2,7 +2,9 @@
 
 require 'totoro/version'
 require 'totoro/config'
-require 'totoro/queue'
+require 'totoro/base_queue'
+require 'totoro/base_worker'
+require 'totoro/initializer'
 
 module Totoro
   # Your code goes here...

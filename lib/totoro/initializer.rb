@@ -3,7 +3,7 @@
 module Totoro
   class Initializer
     DEFAULT_CONFIG = %i[default connect queue].freeze
-    def excute
+    def execute
       config = Rails.application.config_for(:totoro).with_indifferent_access
       # set default queue class
       Totoro.const_set('Queue', default_queue_class(config))
@@ -32,7 +32,7 @@ module Totoro
     end
 
     def prefix_module(prefix, custom_queue_class)
-      prefix_module = Totoro.const_set(prefix.camelize, Module.new)
+      prefix_module = Totoro.const_set(prefix.to_s.camelize, Module.new)
       prefix_module.const_set('Queue', custom_queue_class)
     end
   end
