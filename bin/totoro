@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
+
 require 'totoro'
 # You might want to change this
 ENV['RAILS_ENV'] ||= 'development'
@@ -12,14 +14,15 @@ Rails.logger = logger = Logger.new STDOUT
 logger.level = Logger.const_get(Rails.configuration.log_level.to_s.upcase)
 
 worker_name = ARGV[0]
+queue_class = Totoro::Queue
 logger.info 'Start to subscribe to Rabbitmq'
-worker = Totoro::Config.get_worker worker_name
+worker = queue_class.get_worker worker_name
 worker_queue = worker.class::QUEUE
-Totoro::Queue.subscribe(worker_queue) do |delivery_info, metadata, payload|
+queue_class.subscribe(worker_queue) do |delivery_info, metadata, payload|
   logger.info "#{worker_queue} Received: #{payload}"
   payload_hash = JSON.parse(payload).with_indifferent_access
   worker.process payload_hash, metadata, delivery_info
 end
 
 logger.info 'Listening to the Rabbitmq'
-Totoro::Queue.channel.work_pool.join
+queue_class.channel.work_pool.join
