@@ -44,14 +44,9 @@ after that, add business logic in the process method
 ```
 module Worker
   class WorkerClass < Totoro::BaseWorker
+    setup queuename: <queue_name>
     def process(payload, metadata, delivery_info)
       # worker process
-    end
-
-    private
-
-    def setup
-      @queue_name = <queue_name>
     end
   end
 end
@@ -78,15 +73,9 @@ after that, add business logic in the process method
 ```
 module Worker
   class WorkerClass < Totoro::BaseWorker
+    setup queuename: <queue_name>, prefix: <prefix>
     def process(payload, metadata, delivery_info)
       # worker process
-    end
-
-    private
-
-    def setup
-      @prefix = :<prefix>
-      @queue_name = <queue_name>
     end
   end
 end
