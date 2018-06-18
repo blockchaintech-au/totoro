@@ -18,7 +18,7 @@ module Totoro
       end
 
       def exchange
-        @exchanges ||= channel.default_exchange
+        @exchange ||= channel.default_exchange
       end
 
       # enqueue = publish to direct exchange

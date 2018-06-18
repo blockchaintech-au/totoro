@@ -4,7 +4,7 @@ module Totoro
   class WorkerGenerator < Rails::Generators::Base
     desc 'Generate totoro worker file'
 
-    source_root File.expand_path('../templates', __FILE__)
+    source_root File.expand_path('templates', __dir__)
     argument :name, type: :string
     argument :queue, type: :string, required: false
     argument :prefix, type: :string, required: false

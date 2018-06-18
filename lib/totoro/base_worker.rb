@@ -2,8 +2,17 @@
 
 module Totoro
   class BaseWorker
+    def self.setup(attrs)
+      prefix = attrs[:prefix].present? ? attrs[:prefix] : :default
+      queue_name = attrs[:queue_name]
+      define_method('setup') do
+        raise(Totoro::NeedQueueNameError) if queue_name.nil?
+        @prefix = prefix
+        @queue_name = queue_name
+      end
+    end
+
     def initialize
-      @prefix = :default
       Rails.logger = @logger = Logger.new STDOUT
       @logger.level = Logger.const_get(
         Rails.configuration.log_level.to_s.upcase
@@ -25,10 +34,6 @@ module Totoro
     def process; end
 
     private
-
-    def setup
-      raise(Totoro::NeedQueueNameError, 'Need setup @queue_name')
-    end
 
     def queue_class
       if @prefix == :default
