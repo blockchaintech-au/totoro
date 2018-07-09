@@ -38,7 +38,7 @@ Totoro::Queue.enqueue('queue', payload)
 #### Dequeue
 To create a dequeue daemon, first you need to create a worker
 ```
-rails g totoro:wroker <worker_name> <queue_name>
+rails g totoro:worker <worker_name> <queue_name>
 ```
 after that, add business logic in the process method
 ```
