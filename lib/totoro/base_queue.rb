@@ -25,6 +25,7 @@ module Totoro
       def enqueue(id, payload)
         queue = channel.queue(*config.queue(id))
         payload = JSON.dump payload
+        Rails.logger.info "#{queue.name} Send: #{payload}"
         exchange.publish(payload, routing_key: queue.name)
       end
 
