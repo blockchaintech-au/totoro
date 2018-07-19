@@ -19,7 +19,6 @@ module Totoro
 
     def execute
       @queue_class.subscribe(@queue_name) do |delivery_info, metadata, payload|
-        Rails.logger.info "#{@queue_name} Received: #{payload}"
         payload_hash = JSON.parse(payload).with_indifferent_access
         process(payload_hash, metadata, delivery_info)
       end
