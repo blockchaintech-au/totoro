@@ -1,0 +1,1 @@
+Totoro::Initializer.new.execute
