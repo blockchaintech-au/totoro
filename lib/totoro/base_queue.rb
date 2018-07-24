@@ -24,6 +24,7 @@ module Totoro
       # enqueue = publish to direct exchange
       def enqueue(id, payload)
         Rails.logger.info "#{queue.name} send message"
+        STDOUT.flush
         queue = channel.queue(*config.queue(id))
         payload = JSON.dump payload
         exchange.publish(payload, routing_key: queue.name)
