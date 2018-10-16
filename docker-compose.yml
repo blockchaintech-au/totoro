@@ -27,7 +27,7 @@ services:
     volumes:
       - ./test/totoro_test:/app
       - .:/totoro
-    command: ./bin/rails c
+    command: totoro example_queue
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: root

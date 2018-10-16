@@ -27,6 +27,10 @@ module Totoro
       Rails.logger.info 'Listening to the Rabbitmq'
       STDOUT.flush
       @queue_class.channel.work_pool.join
+    rescue SignalException
+      puts 'Terminating process ..'
+      @queue_class.channel.work_pool.shutdown(true)
+      puts 'Stopped.'
     end
 
     def process; end
