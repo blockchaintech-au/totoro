@@ -28,6 +28,15 @@ module Totoro
         exchange.publish(payload, routing_key: queue.name)
         Rails.logger.info "send message to #{queue.name}"
         STDOUT.flush
+      rescue Bunny::TCPConnectionFailedForAllHosts => error
+        Rails.logger.error error.message
+        Rails.logger.info 'Add failed message to resend list'
+        STDOUT.flush
+        Totoro::TotoroFailedMessage.create(
+          class_name: to_s,
+          queue_id: id,
+          payload: payload
+        )
       end
 
       def subscribe(id)

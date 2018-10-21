@@ -29,6 +29,7 @@ services:
       - .:/totoro
     command: totoro example_queue
     environment:
+      POSTGRES_HOST: db
       POSTGRES_USER: root
       POSTGRES_PASSWORD: root
       RABBITMQ_HOST: rabbitmq
