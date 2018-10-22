@@ -1,7 +1,9 @@
 # Totoro, a RabbitMQ Util
 
 Totoro is a RabbitMQ util that focuses on samplify queue operation. 
-
+## Dependencies
+Please install [Delayed Job active record](https://rubygems.org/gems/delayed_job_active_record) and [Delayed Job recurring](https://rubygems.org/gems/delayed_job_recurring) before use Totoro.
+Totoro basically use delayed job to cache and resend falied messages.
 ## Installation
 
 ### Install gem
@@ -24,8 +26,16 @@ This command will generate two files
 
 1. `totoro.yml` (Rabbitmq configuration file)
 2. `initilizers/totoro.rb` (Rails initializer)
+3. `db/migrate/[tiemstamp]_create_totoro_failed_messages.rb` (DB migration to create messages caching table)
+
+#### Run DB migraion
+`rake db:migrate`
 
 ## Quick Start
+
+### Resend Failed messages daemon
+
+Please run `rake totoro:resend_msg` before you start your app.
 
 ### Default rabbitmq server
 
