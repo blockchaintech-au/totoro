@@ -9,9 +9,11 @@ module Totoro
     queue 'totoro'
     def perform
       Totoro::Queue.connection
-      Totoro::TotoroFailedMessage.all.each do |m|
-        m.class_name.constantize.enqueue(m.queue_id, m.payload)
-        m.destroy
+      Totoro::TotoroFailedMessage.find_in_batches(batch_size: 100) do |message_group|
+        message_group.each do |m|
+          m.class_name.constantize.enqueue(m.queue_id, m.payload)
+          m.destroy
+        end
       end
     rescue Bunny::TCPConnectionFailedForAllHosts => error
       Rails.logger.error error.message
