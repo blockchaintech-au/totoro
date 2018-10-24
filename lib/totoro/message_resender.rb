@@ -15,7 +15,7 @@ module Totoro
           m.destroy
         end
       end
-    rescue Bunny::TCPConnectionFailedForAllHosts => error
+    rescue StandardError => error
       Rails.logger.error error.message
       STDOUT.flush
     end
