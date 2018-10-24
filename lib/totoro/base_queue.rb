@@ -28,7 +28,8 @@ module Totoro
         exchange.publish(payload, routing_key: queue.name)
         Rails.logger.info "send message to #{queue.name}"
         STDOUT.flush
-      rescue Bunny::TCPConnectionFailedForAllHosts => error
+      rescue Bunny::TCPConnectionFailedForAllHosts,
+             AMQ::Protocol::EmptyResponseError => error
         Rails.logger.error error.message
         Rails.logger.info 'Add failed message to resend list'
         STDOUT.flush
