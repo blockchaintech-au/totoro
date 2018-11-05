@@ -10,11 +10,15 @@ module Totoro
       end
 
       def connection
-        @connection ||= Bunny.new(config.connect).tap(&:start)
+        @connection ||= Bunny.new(config.connect.merge(threaded: false)).tap(&:start)
       end
 
       def channel
         @channel ||= connection.create_channel
+      end
+
+      def subscribe_channel
+        @subscribe_channel ||= Bunny.new(config.connect).tap(&:start).create_channel
       end
 
       def exchange
@@ -29,19 +33,13 @@ module Totoro
         Rails.logger.info "send message to #{queue.name}"
         STDOUT.flush
       rescue Bunny::TCPConnectionFailedForAllHosts,
+             Bunny::NetworkErrorWrapper,
              AMQ::Protocol::EmptyResponseError => error
-        Rails.logger.error error.message
-        Rails.logger.info 'Add failed message to resend list'
-        STDOUT.flush
-        Totoro::TotoroFailedMessage.create(
-          class_name: to_s,
-          queue_id: id,
-          payload: payload
-        )
+        handle_failed_msg(id, payload, error)
       end
 
       def subscribe(id)
-        queue = channel.queue(*config.queue(id))
+        queue = subscribe_channel.queue(*config.queue(id))
         queue.subscribe do |delivery_info, metadata, payload|
           yield(delivery_info, metadata, payload)
         end
@@ -49,6 +47,20 @@ module Totoro
 
       def get_worker(worker_class)
         ::Worker.const_get(worker_class.to_s.camelize).new
+      end
+
+      private
+
+      def handle_failed_msg(id, payload, error)
+        Rails.logger.error error.message
+        Rails.logger.info 'Add failed message to resend list'
+        STDOUT.flush
+        @connection = nil
+        Totoro::TotoroFailedMessage.create(
+          class_name: to_s,
+          queue_id: id,
+          payload: payload
+        )
       end
     end
   end
