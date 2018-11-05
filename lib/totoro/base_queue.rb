@@ -51,7 +51,7 @@ module Totoro
         Rails.logger.error error.message
         Rails.logger.info 'Add failed message to resend list'
         STDOUT.flush
-        @config = nil
+        @connection = nil
         Totoro::TotoroFailedMessage.create(
           class_name: to_s,
           queue_id: id,
