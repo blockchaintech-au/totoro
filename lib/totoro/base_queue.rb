@@ -10,7 +10,7 @@ module Totoro
       end
 
       def connection
-        @connection ||= Bunny.new(config.connect).tap(&:start)
+        @connection ||= Bunny.new(config.connect.merge(threaded: false)).tap(&:start)
       end
 
       def channel
@@ -35,7 +35,8 @@ module Totoro
       end
 
       def subscribe(id)
-        queue = channel.queue(*config.queue(id))
+        subscribe_channel =  Bunny.new(config.connect).tap(&:start).create_channel
+        queue = subscribe_channel.queue(*config.queue(id))
         queue.subscribe do |delivery_info, metadata, payload|
           yield(delivery_info, metadata, payload)
         end
