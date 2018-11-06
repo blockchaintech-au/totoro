@@ -17,6 +17,10 @@ module Totoro
         @channel ||= connection.create_channel
       end
 
+      def subscribe_channel
+        @subscribe_channel ||= Bunny.new(config.connect).tap(&:start).create_channel
+      end
+
       def exchange
         @exchange ||= channel.default_exchange
       end
@@ -35,7 +39,6 @@ module Totoro
       end
 
       def subscribe(id)
-        subscribe_channel =  Bunny.new(config.connect).tap(&:start).create_channel
         queue = subscribe_channel.queue(*config.queue(id))
         queue.subscribe do |delivery_info, metadata, payload|
           yield(delivery_info, metadata, payload)
