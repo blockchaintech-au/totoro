@@ -12,7 +12,7 @@ module Totoro
     end
 
     def connect
-      @data[:connect].merge(threaded: false)
+      @data[:connect]
     end
 
     def queue(id)
