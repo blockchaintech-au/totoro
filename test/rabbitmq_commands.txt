@@ -1,0 +1,6 @@
+
+rabbitmqctl set_permissions -p / hui '.*' '.*' '.*'
+rabbitmqctl clear_permissions -p / hui
+rabbitmqctl close_all_connections "changed_user_permissions"
+
+Totoro::Queue.enqueue('example_queue', {shu: 123})
