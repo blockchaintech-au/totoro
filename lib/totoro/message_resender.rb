@@ -8,13 +8,7 @@ module Totoro
     run_every 10.second
     queue 'totoro'
     def perform
-      Totoro::Queue.connection
-      Totoro::TotoroFailedMessage.find_in_batches(batch_size: 100) do |message_group|
-        message_group.each do |m|
-          m.class_name.constantize.enqueue(m.queue_id, m.payload)
-          m.destroy
-        end
-      end
+      Totoro::ResendService.new.resend_all_messages
     rescue StandardError => error
       Rails.logger.error error.message
       STDOUT.flush

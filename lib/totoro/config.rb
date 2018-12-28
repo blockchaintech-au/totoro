@@ -15,6 +15,14 @@ module Totoro
       @data[:connect]
     end
 
+    def exchange(id)
+      @data[:exchange][id][:name]
+    end
+
+    def exchange_name_for_queue(queue_id)
+      @data[:queue][queue_id][:exchange]
+    end
+
     def queue(id)
       name = @data[:queue][id][:name]
       settings = { durable: @data[:queue][id][:durable] }

@@ -10,58 +10,34 @@ module Totoro
       end
 
       def connection
-        @connection ||= Bunny.new(config.connect.merge(threaded: false)).tap(&:start)
+        @connection ||= Bunny.new(config.connect.merge(threaded: false))
       end
 
-      def subscribe_channel
-        @subscribe_channel ||= Bunny.new(config.connect).tap(&:start).create_channel
+      def broadcast(id, payload)
+        Totoro::BroadcastService.new(connection, config).broadcast(id, payload)
+      rescue Totoro::ConnectionBreakError => error
+        handle_failed_msg(id, payload, error, :broadcast)
       end
 
       def enqueue(id, payload)
-        channel = connection.create_channel
-        queue =  channel.queue(*config.queue(id))
-        payload = JSON.dump payload
-        channel.default_exchange.publish(payload, routing_key: queue.name)
-        Rails.logger.info "send message to #{queue.name}"
-        STDOUT.flush
-        channel.close
-      rescue Bunny::TCPConnectionFailedForAllHosts,
-             Bunny::NetworkErrorWrapper,
-             Bunny::ChannelAlreadyClosed,
-             AMQ::Protocol::EmptyResponseError => error
-        handle_failed_msg(id, payload, error)
-      end
-
-      def subscribe(id)
-        queue = subscribe_channel.queue(*config.queue(id))
-        queue.subscribe do |delivery_info, metadata, payload|
-          yield(delivery_info, metadata, payload)
-        end
-      end
-
-      def get_worker(worker_class)
-        ::Worker.const_get(worker_class.to_s.camelize).new
+        Totoro::EnqueueService.new(connection, config).enqueue(id, payload)
+      rescue Totoro::ConnectionBreakError => error
+        handle_failed_msg(id, payload, error, :enqueue)
       end
 
       private
 
-      def handle_failed_msg(id, payload, error)
+      def handle_failed_msg(id, payload, error, group)
         Rails.logger.error error.message
         Rails.logger.info 'Add failed message to resend list'
         STDOUT.flush
-        clear_connection
+        @connection = nil
         Totoro::TotoroFailedMessage.create(
           class_name: to_s,
           queue_id: id,
+          group: group,
           payload: payload
         )
-      end
-
-      def clear_connection
-        @exchange = nil
-        @channel = nil
-        @subscribe_channel = nil
-        @connection = nil
       end
     end
   end

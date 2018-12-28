@@ -9,6 +9,17 @@ default: &default
       example_queue:
         name: real.queue.name
         durable: true
+      exchange_queue:
+        name: real.exchange.queue
+        durable: true
+        exchange: real.exchange.name
+      shu_queue:
+        name: real.shu.queue
+        durable: true
+        exchange: real.exchange.name
+    exchange:
+      example_exchange:
+        name: real.exchange.name
 
   custom:
     connect:

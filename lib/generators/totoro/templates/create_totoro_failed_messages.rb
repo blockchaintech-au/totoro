@@ -5,6 +5,7 @@ class CreateTotoroFailedMessages < ActiveRecord::Migration[5.1]
       t.string :class_name
       t.string :queue_id
       t.jsonb :payload
+      t.string :group
       t.timestamps
     end
   end
