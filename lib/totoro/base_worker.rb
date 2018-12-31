@@ -3,7 +3,7 @@
 module Totoro
   class BaseWorker
     def self.setup(attrs)
-      prefix = attrs[:prefix].present? ? attrs[:prefix] : :default
+      prefix = attrs[:prefix]
       queue_name = attrs[:queue_name]
       define_method('setup') do
         raise(Totoro::NeedQueueNameError) if queue_name.nil?
