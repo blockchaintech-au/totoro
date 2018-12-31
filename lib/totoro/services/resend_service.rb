@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Totoro
   class ResendService
     def resend_all_messages
