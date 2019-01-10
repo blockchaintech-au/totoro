@@ -31,6 +31,49 @@ This command will generate two files
 #### Run DB migraion
 `rake db:migrate`
 
+## Sample configuration
+
+```yaml
+default: &default
+  default:
+    connect:
+      host: rabbitmq
+      port: 5672
+      user: app
+      pass: app
+    queue:
+      normal_queue_for_both_enqueue_and_subscribe:
+        name: default_exchange.queue.name
+        durable: true
+      exchange_queue_for_subscribe:
+        name: fanout.exchange.queue
+        durable: true
+        exchange: fanout.exchange.name
+    exchange:
+      exchange_for_fanout_enqueue:
+        name: fanout.exchange.name
+
+  custom:
+    connect:
+      host: rabbitmq
+      port: 5672
+      user: app
+      pass: app
+    queue:
+      custom_queue:
+        name: custom.queue.name
+        durable: true
+
+development:
+  <<: *default
+
+test:
+  <<: *default
+
+production:
+  <<: *default
+
+```
 ## Quick Start
 
 ### Resend Failed messages daemon
@@ -42,7 +85,13 @@ Please run `rake totoro:resend_msg` before you start your app.
 #### Enqueue
 
 ```
-Totoro::Queue.enqueue('queue', payload)
+Totoro::Queue.enqueue('queue_id', payload)
+```
+
+#### BroadCast (Enqueue to fanout exchange)
+
+```
+Totoro::Queue.broadcast('exchange_id', payload)
 ```
 
 #### Dequeue
@@ -67,6 +116,12 @@ bundle exec totoro worker_class
 ```
 
 ### Custom rabbitmq server
+
+When you have more than one rabbitmq server to connect, you need to add custom configuration.
+
+To use the custom rabbitmq server you need to add `ServerName` between `Totoro` and `Queue`
+
+For example:
 
 #### Enqueue
 
