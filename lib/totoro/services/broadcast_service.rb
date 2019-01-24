@@ -12,7 +12,7 @@ module Totoro
       exchange = channel.fanout(@config.exchange(exchange_id))
       payload = JSON.dump payload
       exchange.publish(payload)
-      Rails.logger.info "send message to exchange #{@config.exchange(exchange_id)}"
+      Rails.logger.debug "send message to exchange #{@config.exchange(exchange_id)}"
       STDOUT.flush
       channel.close
     rescue Bunny::TCPConnectionFailedForAllHosts,

@@ -12,7 +12,7 @@ module Totoro
       queue = channel.queue(*@config.queue(id))
       payload = JSON.dump payload
       exchange.publish(payload, routing_key: queue.name)
-      Rails.logger.info "send message to #{queue.name}"
+      Rails.logger.debug "send message to #{queue.name}"
       STDOUT.flush
       channel.close
     rescue Bunny::TCPConnectionFailedForAllHosts,

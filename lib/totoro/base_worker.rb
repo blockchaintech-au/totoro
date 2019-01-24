@@ -21,7 +21,7 @@ module Totoro
       Rails.logger.info 'Listening to the Rabbitmq'
       STDOUT.flush
       subscribe_service.subscribe(@queue_name) do |delivery_info, metadata, payload|
-        Rails.logger.info "#{@queue_name} received message"
+        Rails.logger.debug "#{@queue_name} received message"
         STDOUT.flush
         payload_hash = JSON.parse(payload).with_indifferent_access
         process(payload_hash, metadata, delivery_info)
