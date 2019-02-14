@@ -7,8 +7,8 @@ require 'totoro/version'
 Gem::Specification.new do |spec|
   spec.name          = 'totoro'
   spec.version       = Totoro::VERSION
-  spec.authors       = ['ShuHui18']
-  spec.email         = ['shu.hui@blockchaintech.net.au']
+  spec.authors       = ['BlockchainTech']
+  spec.email         = ['cex.demo@blockchaintech.net.au']
 
   spec.summary       = 'tool for rabbitmq'
   spec.description   = 'Enpower rabbitmq to make it configrable'

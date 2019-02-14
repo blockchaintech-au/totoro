@@ -9,6 +9,7 @@ default: &default
       example_queue:
         name: real.queue.name
         durable: true
+        clean_start: false
 
   custom:
     connect:

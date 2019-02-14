@@ -8,6 +8,7 @@ module Totoro
 
     def subscribe(id)
       queue = bind_queue(id)
+      queue.purge if @config.clean_start?
       queue.subscribe do |delivery_info, metadata, payload|
         yield(delivery_info, metadata, payload)
       end

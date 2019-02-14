@@ -45,6 +45,7 @@ default: &default
       normal_queue_for_both_enqueue_and_subscribe:
         name: default_exchange.queue.name
         durable: true
+        clean_start: false
       exchange_queue_for_subscribe:
         name: fanout.exchange.queue
         durable: true

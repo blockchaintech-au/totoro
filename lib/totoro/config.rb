@@ -23,6 +23,10 @@ module Totoro
       @data[:queue][queue_id][:exchange]
     end
 
+    def clean_start?
+      @data[:queue][id][:clean_start]
+    end
+
     def queue(id)
       name = @data[:queue][id][:name]
       settings = { durable: @data[:queue][id][:durable] }
