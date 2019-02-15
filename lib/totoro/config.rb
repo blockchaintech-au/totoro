@@ -23,8 +23,16 @@ module Totoro
       @data[:queue][queue_id][:exchange]
     end
 
-    def clean_start?
-      @data[:queue][id][:clean_start]
+    def clean_start?(id)
+      !!@data[:queue][id][:clean_start]
+    end
+
+    def manual_ack?(id)
+      !!@data[:queue][id][:manual_ack]
+    end
+
+    def force_ack?(id)
+      manual_ack?(id) && !!@data[:queue][id][:force_ack]
     end
 
     def queue(id)

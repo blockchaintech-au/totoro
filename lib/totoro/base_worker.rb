@@ -26,6 +26,9 @@ module Totoro
         payload_hash = JSON.parse(payload).with_indifferent_access
         process(payload_hash, metadata, delivery_info)
       end
+
+      handle_usr1_n_usr2
+
       subscribe_service.channel.work_pool.join
     rescue SignalException
       puts 'Terminating process ..'
@@ -36,6 +39,16 @@ module Totoro
     def process; end
 
     private
+
+    def handle_usr1_n_usr2
+      %w[USR1 USR2].each do |signal|
+        Signal.trap(signal) do
+          puts "#{signal} received."
+          handler = "on_#{signal.downcase}"
+          send handler if respond_to?(handler)
+        end
+      end
+    end
 
     def config
       @config ||= Totoro::Config.new(@prefix)

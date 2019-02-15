@@ -28,6 +28,15 @@ This command will generate two files
 2. `initilizers/totoro.rb` (Rails initializer)
 3. `db/migrate/[tiemstamp]_create_totoro_failed_messages.rb` (DB migration to create messages caching table)
 
+#### if you havn't install gem delayed_jobs, then run initialization scripts
+```
+rails g delayed_job:active_record
+```
+
+#### delayed job configuration
+
+https://github.com/collectiveidea/delayed_job
+
 #### Run DB migraion
 `rake db:migrate`
 

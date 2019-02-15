@@ -8,9 +8,11 @@ module Totoro
 
     def subscribe(id)
       queue = bind_queue(id)
-      queue.purge if @config.clean_start?
-      queue.subscribe do |delivery_info, metadata, payload|
+      queue.purge if @config.clean_start?(id)
+      queue.subscribe(manual_ack: @config.manual_ack?(id)) do |delivery_info, metadata, payload|
         yield(delivery_info, metadata, payload)
+      ensure
+        channel.ack(delivery_info.delivery_tag) if @config.force_ack?(id)
       end
     end
 
