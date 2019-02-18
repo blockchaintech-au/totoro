@@ -11,7 +11,7 @@ module Totoro
       @connection.start unless @connection.connected?
       exchange = channel.fanout(@config.exchange(exchange_id))
       payload = JSON.dump payload
-      exchange.publish(payload)
+      exchange.publish(payload, options(attrs))
       Rails.logger.debug "send message to exchange #{@config.exchange(exchange_id)}"
       STDOUT.flush
       channel.close
@@ -25,6 +25,10 @@ module Totoro
     end
 
     private
+
+    def options(exchange_id, attrs)
+      { persistent: @config.exchange_persistent?(exchange_id) }.merge(attrs)
+    end
 
     def channel
       @channel ||= @connection.create_channel

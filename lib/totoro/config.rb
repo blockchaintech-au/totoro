@@ -23,6 +23,14 @@ module Totoro
       @data[:queue][queue_id][:exchange]
     end
 
+    def queue_persistent?(id)
+      !!@data[:queue][id][:persistent]
+    end
+
+    def exchange_persistent?(id)
+      !!@data[:exchange][id][:persistent]
+    end
+
     def clean_start?(id)
       !!@data[:queue][id][:clean_start]
     end

@@ -8,6 +8,7 @@ default: &default
     example_queue:
       name: real.queue.name
       durable: true
+      persistent: true
       clean_start: false
       manual_ack: false
       force_ack: false

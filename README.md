@@ -53,6 +53,7 @@ default: &default
     queue:
       normal_queue_for_both_enqueue_and_subscribe:
         name: default_exchange.queue.name
+        persistent: true
         durable: true
         clean_start: false
       exchange_queue_for_subscribe:
@@ -62,6 +63,7 @@ default: &default
     exchange:
       exchange_for_fanout_enqueue:
         name: fanout.exchange.name
+        persistent: false
 
   custom:
     connect:

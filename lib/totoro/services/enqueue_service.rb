@@ -7,11 +7,11 @@ module Totoro
       @config = config
     end
 
-    def enqueue(id, payload)
+    def enqueue(id, payload, attrs = {})
       @connection.start unless @connection.connected?
       queue = channel.queue(*@config.queue(id))
       payload = JSON.dump payload
-      exchange.publish(payload, routing_key: queue.name)
+      exchange.publish(payload, options(id, queue.name, attrs))
       Rails.logger.debug "send message to #{queue.name}"
       STDOUT.flush
       channel.close
@@ -25,6 +25,10 @@ module Totoro
     end
 
     private
+
+    def options(queue_id, queue_name, attrs)
+      { persistent: @config.queue_persistent?(queue_id), routing_key: queue_name }.merge(attrs)
+    end
 
     def channel
       @channel ||= @connection.create_channel
